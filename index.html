@@ -58,6 +58,22 @@
         stats.appendChild(row(stat, manual.base));
       }
 
+      // Respond to button clicks
+      stats.addEventListener('click', function(event) {
+        const clicked = event.target;
+        if (clicked.tagName === 'BUTTON') {
+          const stat = clicked.parentElement.parentElement.querySelector('input');
+
+          if (clicked.textContent === '+') {
+            stat.value = parseInt(stat.value) + 1;
+            points.value = parseInt(points.value) - 1;
+          } else {
+            stat.value = parseInt(stat.value) - 1;
+            points.value = parseInt(points.value) + 1;
+          }
+        }
+      });
+
       </script>
   </body>
 </html>
