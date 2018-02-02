@@ -63,14 +63,21 @@
         const clicked = event.target;
         if (clicked.tagName === 'BUTTON') {
           const stat = clicked.parentElement.parentElement.querySelector('input');
+          const request = {
+            stat: parseInt(stat.value),
+            points: parseInt(points.value),
+          };
 
+          // Ask the manual to adjust the numbers
           if (clicked.textContent === '+') {
-            stat.value = parseInt(stat.value) + 1;
-            points.value = parseInt(points.value) - 1;
+            manual.increment(request);
           } else {
-            stat.value = parseInt(stat.value) - 1;
-            points.value = parseInt(points.value) + 1;
+            manual.decrement(request);
           }
+
+          // Update the display
+          stat.value = request.stat;
+          points.value = request.points;
         }
       });
 
