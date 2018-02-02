@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Point Buy Calculator</title>
+    <style> input {text-align: center;} </style>
+  </head>
+  <body>
+      <table>
+        <thead>
+          <tr>
+            <td></td>
+            <td><input type="text" id="points" size="2" disabled></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody id="stats">
+        </tbody>
+      </table>
+      <script src="manual.js"></script>
+      <script>
+
+      // Generate a table row for a stat
+      const row = function(stat, base) {
+        const text = document.createTextNode(stat);
+
+        const plus = document.createElement('button');
+        plus.appendChild(document.createTextNode('+'));
+
+        const minus = document.createElement('button');
+        minus.appendChild(document.createTextNode('-'));
+
+        const input = document.createElement('input');
+        input.setAttribute('type', 'text');
+        input.setAttribute('size', '2');
+        input.value = base;
+        input.disabled = true;
+
+        const tr = document.createElement('tr');
+        for (const element of [minus, input, plus, text]) {
+          const td = document.createElement('td');
+          td.appendChild(element);
+          tr.appendChild(td);
+        }
+
+        return tr;
+      };
+
+      // Initialize the calculator based on the manual
+      const manual = new Manual();
+
+      const points = document.querySelector('#points');
+      points.value = manual.points;
+
+      const stats = document.querySelector('#stats');
+      for (const stat of manual.stats) {
+        stats.appendChild(row(stat, manual.base));
+      }
+
+      </script>
+  </body>
+</html>
