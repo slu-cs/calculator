@@ -18,67 +18,53 @@
         <tbody id="stats">
         </tbody>
       </table>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
       <script src="manual.js"></script>
       <script>
 
       // Generate a table row for a stat
       const row = function(stat, base) {
-        const text = document.createTextNode(stat);
-
-        const plus = document.createElement('button');
-        plus.appendChild(document.createTextNode('+'));
-
-        const minus = document.createElement('button');
-        minus.appendChild(document.createTextNode('-'));
-
-        const input = document.createElement('input');
-        input.setAttribute('type', 'text');
-        input.setAttribute('size', '2');
-        input.value = base;
-        input.disabled = true;
-
-        const tr = document.createElement('tr');
-        for (const element of [minus, input, plus, text]) {
-          const td = document.createElement('td');
-          td.appendChild(element);
-          tr.appendChild(td);
-        }
-
-        return tr;
+        return $(`
+          <tr>
+            <td><button>-</button></td>
+            <td><input type="text" size="2" value="${base}" disabled></td>
+            <td><button>+</button></td>
+            <td>${stat}</td>
+          </tr>
+        `);
       };
 
       // Initialize the calculator based on the manual
       const manual = new Manual();
 
-      const points = document.querySelector('#points');
-      points.value = manual.points;
+      const points = $('#points');
+      points.val(manual.points);
 
-      const stats = document.querySelector('#stats');
+      const stats = $('#stats');
       for (const stat of manual.stats) {
-        stats.appendChild(row(stat, manual.base));
+        stats.append(row(stat, manual.base));
       }
 
       // Respond to button clicks
-      stats.addEventListener('click', function(event) {
-        const clicked = event.target;
-        if (clicked.tagName === 'BUTTON') {
-          const stat = clicked.parentElement.parentElement.querySelector('input');
-          const request = {
-            stat: parseInt(stat.value),
-            points: parseInt(points.value),
-          };
+      stats.on('click', 'button', function() {
+        const button = $(this); // Button that was clicked (as a JQ object)
 
-          // Ask the manual to adjust the numbers
-          if (clicked.textContent === '+') {
-            manual.increment(request);
-          } else {
-            manual.decrement(request);
-          }
+        const stat = button.closest('tr').find('input');
+        const request = {
+          stat: parseInt(stat.val()),
+          points: parseInt(points.val()),
+        };
 
-          // Update the display
-          stat.value = request.stat;
-          points.value = request.points;
+        // Ask the manual to adjust the numbers
+        if (button.text() === '+') {
+          manual.increment(request);
+        } else {
+          manual.decrement(request);
         }
+
+        // Update the display
+        stat.val(request.stat);
+        points.val(request.points);
       });
 
       </script>
